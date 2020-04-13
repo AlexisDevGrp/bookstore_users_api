@@ -6,17 +6,32 @@ import (
 	"github.com/AlexisDevGrp/bookstore_users_api/domain/users"
 	"github.com/AlexisDevGrp/bookstore_users_api/services"
 	"github.com/AlexisDevGrp/bookstore_users_api/utils/mess"
+	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	var user users.User
-	fmt.Println(user)
-	bytes, err := ioutil.ReadAll(r.Body)
-	fmt.Println(string(bytes))
-	fmt.Println(err)
-	return
+	params:= mux.Vars(r)
+	userStr := params["user_id"]
+	userId, err := strconv.ParseInt(userStr, 10, 64)
+	fmt.Println("userID: ", userId)
+	if err != nil {
+		msg := mess.BadReqErr("Invalid User Id. The user is mandatory for this type of request.")
+		mess.SendMsg(w, *msg)
+		return
+	}
+	user, errGet := services.GetUser(userId)
+	if err != nil {
+		msg := mess.ItemNotFound(errGet.Message)
+		mess.SendMsg(w, *msg)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	obj, _ := json.Marshal(user);
+	w.Write(obj)
+
 
 }
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -32,16 +47,15 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		mess.SendMsg(w, *msg)
 		return
 	}
-
-	result, saveMsg := services.CreateUser(user)
-	if saveMsg != nil {
-		restErr := mess.RestMsg{
-			Message: "CreateUser not possible",
-			Status:  http.StatusBadRequest,
-			Error:   saveMsg.Message,
-		}
-		mess.SendMsg(w, restErr)
-		fmt.Println("user:", result, " has been created")
+	result, retMsg := services.CreateUser(user)
+	if retMsg != nil {
+		msg := mess.ItemNotCreated(retMsg.Message)
+		mess.SendMsg(w, *msg)
 		return
 	}
+
+	ResMsg := "User: " + strconv.FormatInt(result.Id, 10) + "has been created"
+	msg := mess.ItemCreated(ResMsg)
+	mess.SendMsg(w, *msg)
+	return
 }

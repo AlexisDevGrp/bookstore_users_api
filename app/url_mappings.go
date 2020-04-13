@@ -7,6 +7,6 @@ import (
 // RegisterRoutes - Controller url mapping provides information on the authorised catalog of routes
 func mapURLs() {
 	r.HandleFunc("/ping", health.Ping)
-	r.HandleFunc("/users/{user_id}", users.GetUser).Methods("GET")
+	r.HandleFunc("/users/{user_id:[0-9]+}", users.GetUser).Methods("GET")
 	r.HandleFunc("/users", users.CreateUser).Methods("POST")
 }

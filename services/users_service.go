@@ -7,10 +7,20 @@ import (
 )
 
 func CreateUser (user users.User) (*users.User, *mess.RestMsg) {
-
-
-
-	fmt.Println("Try to create user : ", user)
-
+    if err := user.Validate(); err != nil {
+    	return nil, err
+	}
+	if err := user.Save(); err != nil {
+		return nil, err
+	}
 	return &user, nil
+}
+func GetUser (userId int64) (*users.User, *mess.RestMsg) {
+	res := &users.User{Id: userId}
+
+	if err := res.Get(); err != nil {
+		return nil, err
+	}
+	fmt.Println("Find: res")
+	return res, nil
 }

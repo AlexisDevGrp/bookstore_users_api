@@ -19,15 +19,43 @@ func SendMsg(w http.ResponseWriter, msg RestMsg) {
 }
 func BadReqErr(msg string) *RestMsg {
 	return &RestMsg {
-		Message: "Body Reception problem",
+		Message: msg,
 		Status:  http.StatusBadRequest,
-		Error:   msg,
+		Error:   "Bad Request",
 	}
 }
 func BodyJsonErr(msg string) *RestMsg {
 	return &RestMsg {
-		Message: "Body Json Problem",
+		Message: msg,
 		Status:  http.StatusInternalServerError,
-		Error:   msg,
+		Error:   "Body Json Problem",
+	}
+}
+func NotFound(msg string) *RestMsg {
+	return &RestMsg {
+		Message: msg,
+		Status:  http.StatusNotFound,
+		Error:   "Not Found",
+	}
+}
+func ItemCreated(msg string) *RestMsg {
+	return &RestMsg {
+		Message: msg,
+		Status:  http.StatusCreated,
+		Error:   "Item Created",
+	}
+}
+func ItemNotCreated(msg string) *RestMsg {
+	return &RestMsg {
+		Message: msg,
+		Status:  http.StatusBadRequest,
+		Error:   "Item Not Created",
+	}
+}
+func ItemNotFound(msg string) *RestMsg {
+	return &RestMsg {
+		Message: msg,
+		Status:  http.StatusNotFound,
+		Error:   "Item Not Found",
 	}
 }
