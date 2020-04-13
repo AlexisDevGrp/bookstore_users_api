@@ -2,6 +2,7 @@ package users
 
 import (
 	"fmt"
+	"github.com/AlexisDevGrp/bookstore_users_api/utils/date_utils"
 	"github.com/AlexisDevGrp/bookstore_users_api/utils/mess"
 )
 
@@ -25,6 +26,7 @@ func (user *User) Save() *mess.RestMsg{
 	if current != nil {
 		return mess.BadReqErr(fmt.Sprintf("User %d already exists", user.Id))
 	}
+	user.DateCreated = date_utils.GetNowString()
 	usersDB[user.Id] = user
 	return nil
 }
