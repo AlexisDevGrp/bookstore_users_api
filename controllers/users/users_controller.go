@@ -23,7 +23,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user, errGet := services.GetUser(userId)
-	if err != nil {
+	if errGet != nil {
 		msg := mess.ItemNotFound(errGet.Message)
 		mess.SendMsg(w, *msg)
 		return
